@@ -1,0 +1,11 @@
+function [X, omega] = sis(X_old,omega_old)
+    [r,c,z] = size(X_old);
+    X = zeros(r+1,c,z);
+    X(1:r,:,z) = X_old;
+    omegas = zeros(length(omega_old),1);
+    omegas(length(omega_old)-1) = omega_old;
+    
+    Xn = X(end,:,:);
+    for i=1:r
+        
+end

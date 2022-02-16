@@ -1,0 +1,101 @@
+%% Theoretical values
+c_theory = [4,12,36,100,284,780,2172,5916,16268];
+
+%% estimating c_n(2) for n = 1,2,3,4,5,6,7...
+
+N = 1000;
+x0 = [0,0];
+n_lim = 10;
+c2 = zeros(n_lim,1);
+for current_n=1:n_lim
+    sum = 0;
+    for i=1:N
+        sum = sum + naive(x0,current_n)*4^current_n;
+    end
+    c2(current_n) = sum/N;
+end
+
+%fprintf("\nEstimate of c_%u(2): %f\n",n,c2)
+figure
+hold on
+plot(c2)
+title("Estimate of c_n(2) for N=" +N+ " (N_{SA}/N)")
+ylabel("N_{SA}/N")
+xlabel("Length of SAW [n]")
+hold off
+
+%% Free neighbours only, naive
+
+N = 1000;
+x0 = [0,0];
+n_lim = 10;
+c2 = zeros(n_lim,1);
+c2s = zeros(n_lim,10);
+
+for j=1:10
+    for current_n=1:n_lim
+        omegas = zeros(N,1);
+        for i=1:N
+            [cc, ww] = free_neighbours(x0,current_n);
+            omegas(i) = cc*ww(end);
+        end
+        c2(current_n) = mean(omegas);
+    end
+    c2s(:,j) = c2;
+end
+
+c_mean_SIS = mean(c2s');
+
+figure
+hold on
+plot(c2)
+title("Estimate of c_n(2) for N=" +N+ " (N_{SA}/N)")
+ylabel("N_{SA}/N")
+xlabel("Length of SAW [n]")
+hold off
+
+%% SISR
+clc
+close all
+
+N = 1000;
+x0 = [0,0];
+n_lim = 10;
+c2 = zeros(n_lim,1);
+
+c2s = zeros(n_lim-1,10);
+for i=1:10
+    %Initialization
+    omegas = ones(N,2);
+    c2(1) = 1;
+    X = zeros(1,2,N);
+    
+    for current_n=1:n_lim-1
+        [X,omegas] = sis(X, omegas);
+        
+        indexes = randsample(N,N,true,omegas(:,2)/sum(omegas(:,2)));
+        X = X(:,:,indexes);
+        c2(current_n+1) = mean(omegas(:,2));
+        omegas(:,1) = omegas(:,2);
+    end
+
+    c2 = c2(2:end);
+    c2s(:,i) = c2;
+end
+
+c_mean_SISR = mean(c2s');
+
+figure
+hold on
+plot(c2)
+title("Estimate of c_n(2) for N=" +N+ " (N_{SA}/N)")
+ylabel("N_{SA}/N")
+xlabel("Length of SAW [n]")
+hold off
+
+
+SISR_diff = abs(c_theory - c_mean_SISR);
+SIS_diff = abs(c_theory - c_mean_SIS(1:end-1));
+nbr_n = [1,2,3,4,5,6,7,8,9];
+T = table(nbr_n, c_theory,c_mean_SIS,c_mean_SISR)
+c_theory,c_mean_SIS,c_mean_SISR,SIS_diff,SISR_diff
