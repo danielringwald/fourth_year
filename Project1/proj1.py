@@ -1,6 +1,7 @@
 from numpy import *
 from scipy.linalg import *
 import matplotlib.pyplot as plt
+import math
 
 class cubic_spline:
     def __init__(self, grid, control_points):
