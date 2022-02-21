@@ -8,7 +8,7 @@ for i=1:n
     xprim = datasample(pos_dir,1);
     % Check if drawn sample has already been visited
     if ismember(xprim,nodes,'rows') == 1
-        ismember(xprim,nodes,'rows')
+        %ismember(xprim,nodes,'rows')
         break;
     end
     % If not then add new node to visited nodes
@@ -21,13 +21,16 @@ if length(nodes) - 1 == n
 else 
     c2 = 0;
 end
-% x1 = -5; y1 = -5;
-% x2 = 5;  y2 = 5;
+% x1 = -1; y1 = -1;
+% x2 = 3;  y2 = 3;
 % figure
 % hold on
 % plot(nodes(:,1),nodes(:,2),'--*')
 % axis([x1 x2 y1 y2])
+% title("Not a SAW of length n=6")
+% xlabel("x")
+% ylabel("y")
 % grid on
 % hold off
-end
+% end
 

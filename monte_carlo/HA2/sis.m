@@ -18,7 +18,7 @@ function [X, omegas] = sis(X_old,omega_old)
         end
         
         if nbr == 0
-            xprim = [0,0];
+            xprim = zeros(c,1);
         elseif nbr == 1
             xprim = avail;
         else
